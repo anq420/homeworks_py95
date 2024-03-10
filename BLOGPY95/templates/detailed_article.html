@@ -1,0 +1,49 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ news.title }}</title>
+    <style>
+            hr {
+            border: 0;
+            height: 5px;
+            background-image: linear-gradient(to right, transparent, #E8C0A5, transparent);
+            }
+
+    </style>
+
+
+</head>
+<body>
+        {% autoescape off %}
+        <img src="{{ news.image.url }}" alt="img" style="max-width: 200px">
+        {% endautoescape %}
+        <h2>{{ news.title }} by {{ news.author }}</h2>
+        <p>{{ news.content }}</p>
+        <hr>
+        {% for comment in comments %}
+            <h3>{{ comment.nickname }}</h3>
+            <h3>{{ comment.created_at }}</h3>
+            <h3>{{ comment.content }}</h3>
+            <hr class="line">
+        {% endfor %}
+
+        <form method="post" action="{% url 'article_page' news.id %}">
+            {% csrf_token %}
+            <label for="nickname">Ваш никнейм</label>
+            <input type="text" id="nickname" name="nickname"><br>
+
+            <label for="content">Ваш коммент</label>
+            <input type="text" id="content" name="content"><br>
+
+            <input type="submit" value="Отправить">
+        </form>
+        
+        {% if user.id == news.author_id %}
+            <button onclick="window.location.href = '{% url 'edit_article' news.id %}';">Изменить статью</button>
+        {% endif %}
+
+</body>
+</html>
